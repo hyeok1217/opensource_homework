@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>반려견 품종 분류기 (MLOps)</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        #preview { max-width: 100%; margin-top: 20px; border-radius: 5px; display: none; }
+        .result { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+        .warning { color: red; font-size: 0.9em; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🐶 반려견 품종 분류기</h2>
+        <p>강아지 사진을 업로드해보세요.</p>
+        <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
+        <br>
+        <img id="preview" alt="미리보기">
+        <br><br>
+        <button onclick="uploadImage()">품종 확인하기</button>
+        <div class="result" id="resultText"></div>
+        <div class="warning" id="warningText"></div>
+    </div>
+
+    <script>
+        function previewImage() {
+            const file = document.getElementById('imageInput').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('preview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function uploadImage() {
+            const file = document.getElementById('imageInput').files[0];
+            if (!file) return alert("이미지를 선택해주세요!");
+
+            document.getElementById('resultText').innerText = "분석 중...";
+            document.getElementById('warningText').innerText = "";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch('/predict', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            document.getElementById('resultText').innerText = `품종: ${data.breed} (정확도: ${data.confidence})`;
+            
+            // MLOps 과제 어필 포인트
+            if (data.needs_retraining) {
+                document.getElementById('warningText').innerText = "⚠️ 정확도가 낮습니다. 이 데이터는 MLOps 파이프라인의 재학습 데이터셋으로 자동 추가됩니다.";
+            }
+        }
+    </script>
+</body>
+</html>
