@@ -27,9 +27,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/face-estimate:latest
-
-
-deploy:
+          
+  deploy:
     needs: docker-build-push
     runs-on: self-hosted
     steps:
