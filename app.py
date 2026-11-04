@@ -40,7 +40,7 @@ async def predict(file: UploadFile = File(...)):
     confidence = top_prob[0].item() * 100
     
     # MLOps 시나리오: 확신도가 50% 미만이면 오분류 가능성이 높아 재학습 파이프라인으로 보낸다고 가정
-    needs_retraining = confidence < 50.0
+    needs_retraining = confidence < 60.0
 
     return {
         "breed": predicted_breed,
