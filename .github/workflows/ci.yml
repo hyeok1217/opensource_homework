@@ -43,4 +43,4 @@ jobs:
 
       - name: Run Zero-Downtime Verification
         run: |
-          python verify.py
+          python3 verify.py
