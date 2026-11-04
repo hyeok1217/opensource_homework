@@ -40,3 +40,7 @@ jobs:
           docker stop dog-classifier || true
           docker rm dog-classifier || true
           docker run -d --name dog-classifier -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/face-estimate:latest
+
+      - name: Run Zero-Downtime Verification
+        run: |
+          python verify.py
